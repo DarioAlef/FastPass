@@ -3,8 +3,11 @@ from app.schemas.models import Senha, SenhaResponse
 from app.services.password_manager import (
     salvar_senha, 
     obter_senhas_usuario, 
-    obter_melhor_tempo_usuario,
-    obter_estatisticas_globais
+    obter_melhor_tempo_usuario
+)
+from app.services.ranking import (
+    obter_estatisticas_globais,
+    obter_ranking_global
 )
 from typing import List
 
@@ -40,3 +43,9 @@ async def obter_melhor_tempo(user_id: int):
 async def obter_estatisticas():
     """Obtém estatísticas globais do sistema"""
     return obter_estatisticas_globais()
+
+@router.get("/senha/ranking")
+async def obter_ranking():
+    """Obtém o ranking global dos melhores tempos"""
+    ranking = obter_ranking_global()
+    return {"ranking": ranking}

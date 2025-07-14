@@ -72,9 +72,76 @@ function mostrarJogo() {
     document.getElementById('conteudoPrincipal').style.display = 'block';
     document.getElementById('nomeUsuario').textContent = usuarioAtual.nome;
     
-    tempoInicio = Date.now(); // Marca o tempo de início
+    // Configura o botão de ranking
+    document.getElementById('btnRanking').addEventListener('click', mostrarRanking);
+    
+    tempoInicio = Date.now();
     iniciarTimer();
     document.getElementById("button").addEventListener("click", validarSenha);
+}
+
+async function mostrarRanking() {
+    const modal = document.getElementById('modalRanking');
+    const container = document.getElementById('rankingContainer');
+    
+    modal.style.display = 'block';
+    container.innerHTML = '<div class="loading">Carregando ranking...</div>';
+    
+    try {
+        const response = await fetch('/senha/ranking');
+        if (response.ok) {
+            const data = await response.json();
+            exibirRanking(data.ranking);
+        } else {
+            container.innerHTML = '<div class="no-data">Erro ao carregar ranking</div>';
+        }
+    } catch (error) {
+        console.error('Erro ao carregar ranking:', error);
+        container.innerHTML = '<div class="no-data">Erro ao conectar com o servidor</div>';
+    }
+}
+
+function exibirRanking(ranking) {
+    const container = document.getElementById('rankingContainer');
+    
+    if (ranking.length === 0) {
+        container.innerHTML = '<div class="no-data">Nenhum dado disponível ainda</div>';
+        return;
+    }
+    
+    let html = '';
+    ranking.forEach((item, index) => {
+        const positionIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : item.posicao;
+        const topClass = index < 3 ? 'top-3' : '';
+        
+        html += `
+            <div class="ranking-item ${topClass}">
+                <div class="ranking-position">${positionIcon}</div>
+                <div class="ranking-info">
+                    <div class="ranking-nome">${item.nome}</div>
+                    <div class="ranking-email">${item.email}</div>
+                </div>
+                <div class="ranking-stats">
+                    <div class="ranking-tempo">${item.melhor_tempo}s</div>
+                    <div class="ranking-total">${item.total_senhas} senha(s)</div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+function fecharModalRanking() {
+    document.getElementById('modalRanking').style.display = 'none';
+}
+
+// Fecha o modal ao clicar fora dele
+window.onclick = function(event) {
+    const modal = document.getElementById('modalRanking');
+    if (event.target === modal) {
+        fecharModalRanking();
+    }
 }
 
 async function validarSenha() {
@@ -104,13 +171,12 @@ async function validarSenha() {
     atualizarItem(itemTamanho, tamanhoValido);
     atualizarItem(itemRepetido, semRepetido);
 
-    // Verifica se todos os critérios foram atendidos
     const senhaValida = temDigito && temMaiuscula && temMinuscula && 
                        temEspecial && !temEspaco && tamanhoValido && semRepetido;
 
     if (senhaValida) {
         const tempoFinal = Date.now();
-        const tempoCompletado = Math.round((tempoFinal - tempoInicio) / 1000); // tempo em segundos
+        const tempoCompletado = Math.round((tempoFinal - tempoInicio) / 1000);
         
         await salvarSenhaValida(senha, tempoCompletado);
     }
@@ -134,7 +200,6 @@ async function salvarSenhaValida(senha, tempoCompletado) {
             const result = await response.json();
             alert(`🎉 Parabéns! Senha válida criada em ${tempoCompletado} segundos!`);
             
-            // Opcional: mostrar estatísticas do usuário
             await mostrarEstatisticas();
         } else {
             console.error('Erro ao salvar senha');
