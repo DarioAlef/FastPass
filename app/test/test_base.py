@@ -5,7 +5,6 @@ from sqlalchemy.orm import sessionmaker
 from app.main import app
 from app.schemas.models import Base
 from app.utils.config import SessionLocal
-import os
 
 # Configuração do banco de dados de teste
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
@@ -38,25 +37,17 @@ def client():
 
 @pytest.fixture
 def sample_user():
+
     return {
         "nome": "João Silva",
-        "email": "joao@teste.com"
+        "email": "joao@email.com"
     }
 
 @pytest.fixture
 def sample_password():
+    # Fixture que retorna dados de uma senha de exemplo
     return {
         "senha": "MinhaSenh@123",
         "tempo_completado": 25,
-        "user_id": 1
+        "user_id": 1  # Será atualizado nos testes
     }
-
-def cleanup_test_db():
-    """Remove o arquivo de banco de teste se existir"""
-    if os.path.exists("./test.db"):
-        os.remove("./test.db")
-
-@pytest.fixture(autouse=True)
-def cleanup():
-    yield
-    cleanup_test_db()

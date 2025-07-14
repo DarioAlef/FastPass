@@ -4,7 +4,6 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import desc
 
 def salvar_senha(senha: Senha):
-    """Salva uma senha válida no banco de dados"""
     db = SessionLocal()
     try:
         db_senha = SenhaORM(
@@ -23,7 +22,6 @@ def salvar_senha(senha: Senha):
         db.close()
 
 def obter_senhas_usuario(user_id: int):
-    """Obtém todas as senhas de um usuário específico"""
     db = SessionLocal()
     try:
         senhas = db.query(SenhaORM).filter(
@@ -34,7 +32,6 @@ def obter_senhas_usuario(user_id: int):
         db.close()
 
 def obter_melhor_tempo_usuario(user_id: int):
-    """Obtém o melhor tempo de um usuário específico"""
     db = SessionLocal()
     try:
         melhor_senha = db.query(SenhaORM).filter(
@@ -45,7 +42,6 @@ def obter_melhor_tempo_usuario(user_id: int):
         db.close()
 
 def obter_estatisticas_globais():
-    """Obtém estatísticas globais do sistema"""
     db = SessionLocal()
     try:
         total_senhas = db.query(SenhaORM).count()
