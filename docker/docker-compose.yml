@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16
+    container_name: FastPass-db
+    restart: always
+    env_file:
+      - ../.env
+    ports:
+      - 5433:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  fastapi:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: FastPass_fastapi
+    restart: always
+    volumes:
+      - ../:/app
+      - /app/.venv
+      - /app/__pycache__
+    ports:
+      - 5000:5000
+    env_file:
+      - ../.env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000", "--reload", "--reload-dir", "/app"]
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+
+volumes:
+  pgdata:

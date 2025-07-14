@@ -1,4 +1,6 @@
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from pydantic_settings import BaseSettings
 import os
 
@@ -17,3 +19,10 @@ class Config:
     env_file_encoding = "utf-8"
         
 settings = Settings()
+
+
+DATABASE_URL = (
+    f"postgresql://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}"
+)
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
