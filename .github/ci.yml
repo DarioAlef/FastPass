@@ -93,7 +93,7 @@ jobs:
           "
 
       - name: Build Docker image
-        run: docker build -t fastpass-test .  # Builda a imagem Docker localmente para garantir que o Dockerfile está correto
+        run: docker build -t fastpass-test .  
 
       - name: Test Docker image
         run: |
