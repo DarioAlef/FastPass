@@ -1,0 +1,38 @@
+<!-- app/templates/home.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ title }}</title>   <!-- usa a variável "title" -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+  <h1>{{ title }}</h1>
+    <div class="timer">
+        Tempo restante <span id="tempo">00:30</span>
+    </div>
+        
+    <div class="container">
+        <h1>Desafio de senhas</h1>
+        <p>Tente criar uma senha forte que atenda a todos os critérios abaixo:</p>
+        
+        <input type="password" id="senha" placeholder="Digite sua senha">
+        <button onclick="validarSenha()">Verificar</button>
+
+        <ul id="feedback">
+            <li id="tamanho">❌ Deve ter pelo menos 8 caracteres</li>
+            <li id="maiuscula">❌ Deve conter pelo menos uma letra maiúscula</li>
+            <li id="minuscula">❌ Deve conter pelo menos uma letra minúscula</li>
+            <li id="numero">❌ Deve conter pelo menos um número</li>
+            <li id="caracterEspecial">❌ Deve conter pelo menos um caractere especial (exemplo: @, #, $, etc.)</li>
+            <li id="repetido">❌ Não deve conter caracteres repetidos consecutivos</li>
+            <li id="branco">❌ Não deve conter espaços em branco</li>
+        </ul>
+    </div>
+  
+  
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
